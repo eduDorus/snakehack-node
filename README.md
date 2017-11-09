@@ -41,10 +41,9 @@ Test the client in your browser: [http://localhost:5000](http://localhost:5000)
 
 Click the Deploy to Heroku button at the top or use the command line commands below.
 
-Create a new NodeJS Heroku app:
-
+Create new  NodeJS Heroku app, `--region eu` is important for faster response times:
 ```
-heroku create [APP_NAME]
+heroku create [APP_NAME] --region eu
 ```
 
 Push code to Heroku servers:
