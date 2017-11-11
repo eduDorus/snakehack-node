@@ -7,8 +7,10 @@
   "repository": "https://github.com/stair-ch/snakehack-node",
   "dependencies": {
     "body-parser": "^1.16.1",
+    "cuint": "^0.2.2",
     "express": "^4.14.1",
     "morgan": "^1.8.1",
+    "node-pathfinding": "^0.2.6",
     "nodemon": "^1.11.0"
   },
   "devDependencies": {
