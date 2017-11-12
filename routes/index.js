@@ -24,49 +24,54 @@ router.post('/start', function (req, res) {
 // Handle POST request to '/move'
 router.post('/move', function (req, res) {
 
-  const actionSet = ['up', 'down', 'left', 'right'];
+  try {
+    const actionSet = ['up', 'down', 'left', 'right'];
 
-  console.log(JSON.stringify(req.body, null, 2));
-  const width = req.body.width;
-  const height = req.body.height;
-  const food = req.body.food;
+    //console.log(JSON.stringify(req.body, null, 2));
+    const width = req.body.width;
+    const height = req.body.height;
+    const food = req.body.food;
 
-  // Create Gameboard
-  let gameboard = createEmptyGameBoard(width, height, 0);
-  gameboard = setSnakesOnGameboard(gameboard, req.body.snakes);
-  //gameboard = setFoodOnGameboard(gameboard, req.body.food);
+    // Create Gameboard
+    let gameboard = createEmptyGameBoard(width, height, 0);
+    gameboard = setSnakesOnGameboard(gameboard, req.body.snakes);
+    //gameboard = setFoodOnGameboard(gameboard, req.body.food);
 
-  // Get snake hack
-  const head = getSnakeHead(req.body.you, req.body.snakes);
-  const headX = head[0]
-  const headY = head[1]
+    // Get snake hack
+    const head = getSnakeHead(req.body.you, req.body.snakes);
+    const headX = head[0]
+    const headY = head[1]
 
 
-  // Path finding
-  buf = pathfinding.bytesFrom2DArray(width, height, gameboard);
-  grid = pathfinding.buildGrid(width, height, buf);
+    // Path finding
+    buf = pathfinding.bytesFrom2DArray(width, height, gameboard);
+    grid = pathfinding.buildGrid(width, height, buf);
 
-  // Food search
-  const pathArray = food.map(foodCords => {
-    return pathfinding.findPath(headX, headY, foodCords[0], foodCords[1], grid);
-  })
+    // Food search
+    const pathArray = food.map(foodCords => {
+      return pathfinding.findPath(headX, headY, foodCords[0], foodCords[1], grid);
+    })
 
-  let bestLength = 100;
-  const path = pathArray.reduce((bestPath, pathElement) => {
-    if (pathElement.length < bestLength) {
-      bestPath = pathElement;
-      bestLength = pathElement.length;
-    }
-    return bestPath
-  });
+    let bestLength = 100;
+    const path = pathArray.reduce((bestPath, pathElement) => {
+      if (pathElement.length < bestLength) {
+        bestPath = pathElement;
+        bestLength = pathElement.length;
+      }
+      return bestPath
+    });
 
-  // Convert to int
-  const predictX = UINT32(path[1])._high
-  const predictY = UINT32(path[1])._low
+    // Convert to int
+    const predictX = UINT32(path[1])._high
+    const predictY = UINT32(path[1])._low
 
-  //console.log(headX, headY, predictX, predictY);
-  console.log("path on grid :" + (grid.toString(1 << 16 | 0, 1 << 16 | 4, path)));
-  //console.log(gameboard);
+    //console.log(headX, headY, predictX, predictY);
+    console.log("path on grid :" + (grid.toString(1 << 16 | 0, 1 << 16 | 4, path)));
+    //console.log(gameboard);
+
+  } catch (e) {
+    console.log(e.stack);
+  }
 
   // Response data
   var data = {
@@ -112,7 +117,7 @@ const setFoodOnGameboard = (gameboard, food) => {
 
 const nextMove = (headX, headY, predictX, predictY) => {
   console.log(headX, headY, predictX, predictY);
-  let move = "";
+  let move = "up";
   if (predictY < headY) {
     move = "up"
   }
